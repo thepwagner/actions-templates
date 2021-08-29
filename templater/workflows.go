@@ -1,0 +1,110 @@
+package templater
+
+import (
+	"bytes"
+	"context"
+	"fmt"
+	"io/ioutil"
+	"path/filepath"
+	"text/template"
+
+	"github.com/Masterminds/sprig"
+	"github.com/google/go-github/v38/github"
+	"github.com/sirupsen/logrus"
+)
+
+type wfParameters struct {
+	Image               string
+	BuildPre, BuildPost string
+}
+
+func (t *Templater) RenderWorkflows(ctx context.Context) error {
+	for owner, ownerRepos := range t.config.Repositories {
+		for repo, repoConfig := range ownerRepos {
+			if err := t.renderWorkflow(ctx, owner, repo, repoConfig); err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
+func (t *Templater) loadWorkflowTemplates() {
+	t.loadTemplates.Do(func() {
+		const workflowsDir = "workflows"
+		files, err := ioutil.ReadDir(workflowsDir)
+		if err != nil {
+			panic(err)
+		}
+
+		t.templates = make(map[string]*template.Template)
+		for _, f := range files {
+			fp := filepath.Join(workflowsDir, f.Name())
+			b, err := ioutil.ReadFile(fp)
+			if err != nil {
+				panic(err)
+			}
+			fn := f.Name()
+			t.templates[fn] = template.Must(template.New(fn).Delims("{{{", "}}}").Funcs(sprig.TxtFuncMap()).Parse(string(b)))
+		}
+	})
+}
+
+func (t *Templater) renderWorkflow(ctx context.Context, owner, name string, cfg *RepositoryConfiguration) error {
+	ref, _, err := t.client.Git.GetRef(ctx, owner, name, "heads/main")
+	if err != nil {
+		return fmt.Errorf("getting base ref: %w", err)
+	}
+	refSHA := ref.GetObject().GetSHA()
+	logrus.WithFields(logrus.Fields{
+		"ref": refSHA,
+	}).Info("loaded base ref")
+
+	t.loadWorkflowTemplates()
+	params := wfParameters{
+		Image: fmt.Sprintf("registry.k8s.pwagner.net/library/%s", name),
+	}
+	if cfg != nil {
+		params.BuildPre = cfg.PreBuild
+		params.BuildPost = cfg.PostBuild
+	}
+
+	var entries []*github.TreeEntry
+	for name, tmpl := range t.templates {
+		var buf bytes.Buffer
+		if err := tmpl.Execute(&buf, params); err != nil {
+			return err
+		}
+		entries = append(entries, &github.TreeEntry{
+			Path:    github.String(fmt.Sprintf(".github/workflows/%s", name)),
+			Type:    github.String("blob"),
+			Content: github.String(buf.String()),
+			Mode:    github.String("100644"),
+		})
+	}
+
+	tree, _, err := t.client.Git.CreateTree(ctx, owner, name, refSHA, entries)
+	if err != nil {
+		return fmt.Errorf("creating tree: %w", err)
+	}
+
+	commit, _, err := t.client.Git.CreateCommit(ctx, owner, name, &github.Commit{
+		Message: github.String("Update workflows"),
+		Author:  t.config.Committer,
+		Tree:    tree,
+		Parents: []*github.Commit{
+			{SHA: ref.GetObject().SHA},
+		},
+	})
+	if err != nil {
+		return fmt.Errorf("creating commit: %w", err)
+	}
+	logrus.WithField("commit", commit.GetSHA()).Info("created commit")
+
+	ref.Object.SHA = commit.SHA
+	if _, _, err = t.client.Git.UpdateRef(ctx, owner, name, ref, false); err != nil {
+		return fmt.Errorf("updating ref: %w", err)
+	}
+	return nil
+}
