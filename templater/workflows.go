@@ -21,7 +21,7 @@ type wfParameters struct {
 func (t *Templater) RenderWorkflows(ctx context.Context) error {
 	for owner, ownerRepos := range t.config.Repositories {
 		for repo, repoConfig := range ownerRepos {
-			if err := t.renderWorkflow(ctx, owner, repo, repoConfig); err != nil {
+			if err := t.renderWorkflows(ctx, owner, repo, repoConfig); err != nil {
 				return err
 			}
 		}
@@ -51,8 +51,8 @@ func (t *Templater) loadWorkflowTemplates() {
 	})
 }
 
-func (t *Templater) renderWorkflow(ctx context.Context, owner, name string, cfg *RepositoryConfiguration) error {
-	ref, _, err := t.client.Git.GetRef(ctx, owner, name, "heads/main")
+func (t *Templater) renderWorkflows(ctx context.Context, owner, repo string, cfg *RepositoryConfiguration) error {
+	ref, _, err := t.client.Git.GetRef(ctx, owner, repo, "heads/main")
 	if err != nil {
 		return fmt.Errorf("getting base ref: %w", err)
 	}
@@ -63,7 +63,7 @@ func (t *Templater) renderWorkflow(ctx context.Context, owner, name string, cfg 
 
 	t.loadWorkflowTemplates()
 	params := wfParameters{
-		Image: fmt.Sprintf("registry.k8s.pwagner.net/library/%s", name),
+		Image: fmt.Sprintf("registry.k8s.pwagner.net/library/%s", repo),
 	}
 	if cfg != nil {
 		params.BuildPre = cfg.PreBuild
@@ -76,20 +76,34 @@ func (t *Templater) renderWorkflow(ctx context.Context, owner, name string, cfg 
 		if err := tmpl.Execute(&buf, params); err != nil {
 			return err
 		}
+		rendered := buf.String()
+
+		// Skip if the content matches the current file:
+		wfPath := fmt.Sprintf(".github/workflows/%s", name)
+		if existing, _, _, err := t.client.Repositories.GetContents(ctx, owner, repo, wfPath, &github.RepositoryContentGetOptions{Ref: refSHA}); err == nil {
+			if ec, err := existing.GetContent(); err == nil && ec == rendered {
+				continue
+			}
+		}
+
 		entries = append(entries, &github.TreeEntry{
-			Path:    github.String(fmt.Sprintf(".github/workflows/%s", name)),
+			Path:    github.String(wfPath),
 			Type:    github.String("blob"),
-			Content: github.String(buf.String()),
+			Content: github.String(rendered),
 			Mode:    github.String("100644"),
 		})
 	}
 
-	tree, _, err := t.client.Git.CreateTree(ctx, owner, name, refSHA, entries)
+	if len(entries) == 0 {
+		return nil
+	}
+
+	tree, _, err := t.client.Git.CreateTree(ctx, owner, repo, refSHA, entries)
 	if err != nil {
 		return fmt.Errorf("creating tree: %w", err)
 	}
 
-	commit, _, err := t.client.Git.CreateCommit(ctx, owner, name, &github.Commit{
+	commit, _, err := t.client.Git.CreateCommit(ctx, owner, repo, &github.Commit{
 		Message: github.String("Update workflows"),
 		Author:  t.config.Committer,
 		Tree:    tree,
@@ -103,7 +117,7 @@ func (t *Templater) renderWorkflow(ctx context.Context, owner, name string, cfg 
 	logrus.WithField("commit", commit.GetSHA()).Info("created commit")
 
 	ref.Object.SHA = commit.SHA
-	if _, _, err = t.client.Git.UpdateRef(ctx, owner, name, ref, false); err != nil {
+	if _, _, err = t.client.Git.UpdateRef(ctx, owner, repo, ref, false); err != nil {
 		return fmt.Errorf("updating ref: %w", err)
 	}
 	return nil
