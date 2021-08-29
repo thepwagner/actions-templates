@@ -24,6 +24,7 @@ type Config struct {
 	Auth struct {
 		GitHub string `yaml:"github"`
 	} `yaml:"auth"`
+	Registry string `yaml:"registry"`
 
 	Committer *github.CommitAuthor `yaml:"committer"`
 }

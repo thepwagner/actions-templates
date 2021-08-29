@@ -63,7 +63,7 @@ func (t *Templater) renderWorkflows(ctx context.Context, owner, repo string, cfg
 
 	t.loadWorkflowTemplates()
 	params := wfParameters{
-		Image: fmt.Sprintf("registry.k8s.pwagner.net/library/%s", repo),
+		Image: fmt.Sprintf("%s/%s", t.config.Registry, repo),
 	}
 	if cfg != nil {
 		params.BuildPre = cfg.PreBuild
