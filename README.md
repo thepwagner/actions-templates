@@ -1,5 +1,9 @@
 # actions-templates
 
+:warning: Use https://github.blog/changelog/2021-10-05-github-actions-dry-your-github-actions-configuration-by-reusing-workflows/ instead.
+
+
+
 Reads a [SOPS](https://github.com/mozilla/sops) configuration file and offers two features:
 * `secrets` - synchronize secrets with each repository
 * `workflows` - render workflow templates from `workflows/` directory
