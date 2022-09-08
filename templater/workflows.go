@@ -4,11 +4,11 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"path/filepath"
 	"text/template"
 
-	"github.com/Masterminds/sprig"
+	"github.com/Masterminds/sprig/v3"
 	"github.com/google/go-github/v47/github"
 	"github.com/sirupsen/logrus"
 )
@@ -33,7 +33,7 @@ func (t *Templater) RenderWorkflows(ctx context.Context) error {
 func (t *Templater) loadWorkflowTemplates() {
 	t.loadTemplates.Do(func() {
 		const workflowsDir = "workflows"
-		files, err := ioutil.ReadDir(workflowsDir)
+		files, err := os.ReadDir(workflowsDir)
 		if err != nil {
 			panic(err)
 		}
@@ -41,7 +41,7 @@ func (t *Templater) loadWorkflowTemplates() {
 		t.templates = make(map[string]*template.Template)
 		for _, f := range files {
 			fp := filepath.Join(workflowsDir, f.Name())
-			b, err := ioutil.ReadFile(fp)
+			b, err := os.ReadFile(fp)
 			if err != nil {
 				panic(err)
 			}
