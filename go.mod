@@ -1,6 +1,6 @@
 module github.com/thepwagner/actions-templates
 
-go 1.17
+go 1.19
 
 require (
 	github.com/GoKillers/libsodium-go v0.0.0-20171022220152-dd733721c3cb
