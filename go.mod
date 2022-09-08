@@ -6,7 +6,7 @@ require (
 	github.com/GoKillers/libsodium-go v0.0.0-20171022220152-dd733721c3cb
 	github.com/Masterminds/sprig/v3 v3.2.2
 	github.com/google/go-github/v47 v47.0.0
-	github.com/sirupsen/logrus v1.8.1
+	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/cobra v1.5.0
 	go.mozilla.org/sops/v3 v3.7.3
 	golang.org/x/oauth2 v0.0.0-20220411215720-9780585627b5
@@ -93,7 +93,7 @@ require (
 	go.uber.org/atomic v1.9.0 // indirect
 	golang.org/x/crypto v0.0.0-20220411220226-7b82a4e95df4 // indirect
 	golang.org/x/net v0.0.0-20220420153159-1850ba15e1be // indirect
-	golang.org/x/sys v0.0.0-20220412211240-33da011f77ad // indirect
+	golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8 // indirect
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20220224211638-0e9765cccd65 // indirect
