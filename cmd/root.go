@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/google/go-github/v47/github"
+	"github.com/google/go-github/v48/github"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/thepwagner/actions-templates/templater"
