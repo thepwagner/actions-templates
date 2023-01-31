@@ -9,7 +9,7 @@ import (
 	"text/template"
 
 	"github.com/Masterminds/sprig/v3"
-	"github.com/google/go-github/v49/github"
+	"github.com/google/go-github/v50/github"
 	"github.com/sirupsen/logrus"
 )
 
