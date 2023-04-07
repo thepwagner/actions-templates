@@ -10,7 +10,7 @@ require (
 	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/cobra v1.7.0
 	go.mozilla.org/sops/v3 v3.7.3
-	golang.org/x/oauth2 v0.6.0
+	golang.org/x/oauth2 v0.7.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
