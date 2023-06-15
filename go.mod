@@ -5,7 +5,6 @@ go 1.19
 require (
 	github.com/GoKillers/libsodium-go v0.0.0-20171022220152-dd733721c3cb
 	github.com/Masterminds/sprig/v3 v3.2.3
-	github.com/google/go-github/v52 v52.0.0
 	github.com/google/go-github/v53 v53.1.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.7.0
