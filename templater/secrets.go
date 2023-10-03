@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	sodium "github.com/GoKillers/libsodium-go/cryptobox"
-	"github.com/google/go-github/v54/github"
+	"github.com/google/go-github/v55/github"
 	"github.com/sirupsen/logrus"
 )
 
