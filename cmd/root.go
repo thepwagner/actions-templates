@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/google/go-github/v55/github"
+	"github.com/getsops/sops/v3/decrypt"
+	"github.com/google/go-github/v56/github"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/thepwagner/actions-templates/templater"
-	"go.mozilla.org/sops/v3/decrypt"
 	"golang.org/x/oauth2"
 	"gopkg.in/yaml.v3"
 )

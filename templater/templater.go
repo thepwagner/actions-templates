@@ -5,7 +5,7 @@ import (
 	"sync"
 	"text/template"
 
-	"github.com/google/go-github/v55/github"
+	"github.com/google/go-github/v56/github"
 )
 
 type Repo struct {
