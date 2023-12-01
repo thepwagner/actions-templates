@@ -7,6 +7,7 @@ require (
 	github.com/Masterminds/sprig/v3 v3.2.3
 	github.com/getsops/sops/v3 v3.8.1
 	github.com/google/go-github/v56 v56.0.0
+	github.com/google/go-github/v57 v57.0.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.8.0
 	golang.org/x/oauth2 v0.15.0
