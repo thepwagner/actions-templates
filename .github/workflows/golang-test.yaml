@@ -1,0 +1,14 @@
+name: CI
+
+on:
+  push:
+    branches: [ '**' ]
+    tags-ignore: [ 'v*.*.*' ]
+
+permissions: {}
+
+jobs:
+  build:
+    uses: thepwagner-org/actions/.github/workflows/golang-test.yaml@natrium
+    permissions:
+      contents: read
