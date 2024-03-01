@@ -1,12 +1,14 @@
 module github.com/thepwagner/actions-templates
 
-go 1.19
+go 1.21
+
+toolchain go1.22.0
 
 require (
 	github.com/GoKillers/libsodium-go v0.0.0-20171022220152-dd733721c3cb
 	github.com/Masterminds/sprig/v3 v3.2.3
 	github.com/getsops/sops/v3 v3.8.1
-	github.com/google/go-github/v59 v59.0.0
+	github.com/google/go-github/v60 v60.0.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.8.0
 	golang.org/x/oauth2 v0.17.0

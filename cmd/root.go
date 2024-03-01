@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/getsops/sops/v3/decrypt"
-	"github.com/google/go-github/v59/github"
+	"github.com/google/go-github/v60/github"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/thepwagner/actions-templates/templater"
