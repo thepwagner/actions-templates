@@ -11,6 +11,6 @@ jobs:
   build:
     uses: thepwagner-org/actions/.github/workflows/golang-test.yaml@deb-packages
     with:
-      deb-packages: libsodium-dev
+      deb-packages: libsodium-dev,cowsay
     permissions:
       contents: read
