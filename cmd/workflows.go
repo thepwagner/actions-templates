@@ -10,7 +10,7 @@ import (
 var workflowsCmd = &cobra.Command{
 	Use:   "workflows",
 	Short: "Render and upload workflow files in the default branch",
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(*cobra.Command, []string) error {
 		t, err := newTemplater()
 		if err != nil {
 			return err
