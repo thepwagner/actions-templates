@@ -110,7 +110,7 @@ func (t *Templater) renderWorkflows(ctx context.Context, owner, repo string, cfg
 		Parents: []*github.Commit{
 			{SHA: ref.GetObject().SHA},
 		},
-	})
+	}, &github.CreateCommitOptions{})
 	if err != nil {
 		return fmt.Errorf("creating commit: %w", err)
 	}
