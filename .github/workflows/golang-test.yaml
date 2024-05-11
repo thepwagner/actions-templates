@@ -10,7 +10,7 @@ permissions: {}
 jobs:
   build:
     uses: thepwagner-org/actions/.github/workflows/golang-test.yaml@deb-packages
-    with:
-      deb-packages: libsodium-dev,curl
+    # with:
+    #   deb-packages: libsodium-dev
     permissions:
       contents: read
