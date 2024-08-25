@@ -2,7 +2,7 @@ module github.com/thepwagner/actions-templates
 
 go 1.21
 
-toolchain go1.22.6
+toolchain go1.23.0
 
 require (
 	github.com/GoKillers/libsodium-go v0.0.0-20171022220152-dd733721c3cb
