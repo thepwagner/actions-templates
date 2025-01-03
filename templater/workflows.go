@@ -87,10 +87,10 @@ func (t *Templater) renderWorkflows(ctx context.Context, owner, repo string, cfg
 		}
 
 		entries = append(entries, &github.TreeEntry{
-			Path:    github.String(wfPath),
-			Type:    github.String("blob"),
-			Content: github.String(rendered),
-			Mode:    github.String("100644"),
+			Path:    github.Ptr(wfPath),
+			Type:    github.Ptr("blob"),
+			Content: github.Ptr(rendered),
+			Mode:    github.Ptr("100644"),
 		})
 	}
 
@@ -104,7 +104,7 @@ func (t *Templater) renderWorkflows(ctx context.Context, owner, repo string, cfg
 	}
 
 	commit, _, err := t.client.Git.CreateCommit(ctx, owner, repo, &github.Commit{
-		Message: github.String("Update workflows"),
+		Message: github.Ptr("Update workflows"),
 		Author:  t.config.Committer,
 		Tree:    tree,
 		Parents: []*github.Commit{
